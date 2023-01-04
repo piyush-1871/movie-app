@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./components/App";
 import combineReducers from "./reducers/index";
 import { legacy_createStore, applyMiddleware } from "redux";
-
+import thunk from "redux-thunk";
 //  function logger(obj, next, action)
 // logger(obj)(next)(action)
 /*
@@ -24,18 +24,24 @@ const logger =
   (next) =>
   (action) => {
     // logger code
-    console.log("ACTION_TYPE = ", action.type);
+    if (typeof action !== "function") {
+      console.log("ACTION_TYPE = ", action.type);
+    }
     next(action);
   };
-const store = legacy_createStore(combineReducers, applyMiddleware(logger));
-// console.log('store',store);
-// console.log('beforeState',store.getState());
 
-// store.dispatch({
-//   type:'ADD_MOVIES',
-//   movies:[{name: 'Superman'}]
-// })
-// console.log('afterState',store.getState());
+// const thunk = (dispatch, getState) => (next) => (action) => {
+//    // logger code
+//     if(typeof action === 'function'){
+//       action(dispatch);
+//       return;
+//     }
+//     next(action);
+// };
+const store = legacy_createStore(
+  combineReducers,
+  applyMiddleware(logger, thunk)
+);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
