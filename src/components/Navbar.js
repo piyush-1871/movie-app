@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "../index.css";
 import { handleMovieSearch, addMovieToList } from "../actions";
+import { StoreContext } from "..";
 
 class Navbar extends Component {
   constructor(props) {
@@ -13,9 +14,9 @@ class Navbar extends Component {
   handleAddToMovies = (movie) => {
     this.props.dispatch(addMovieToList(movie));
     this.setState({
-      showSearchResults: false
-    })
-  }
+      showSearchResults: false,
+    });
+  };
   handleSearch = () => {
     const { searchText } = this.state;
     this.props.dispatch(handleMovieSearch(searchText));
@@ -26,7 +27,7 @@ class Navbar extends Component {
     });
   };
   render() {
-    const {result: movie, showSearchResults } = this.props.search;
+    const { result: movie, showSearchResults } = this.props.search;
     return (
       <div className="nav">
         <div className="search-container">
@@ -43,7 +44,7 @@ class Navbar extends Component {
             <div className="search-results">
               <div className="search-result">
                 <img src={movie.Poster} alt="search-pic" />
-                
+
                 <div className="movie-info">
                   <span>{movie.Title}</span>
                   <button onClick={() => this.handleAddToMovies(movie)}>
@@ -59,4 +60,14 @@ class Navbar extends Component {
   }
 }
 
-export default Navbar;
+class NavbarWrapper extends React.Component {
+  render() {
+    return (
+      <StoreContext.Consumer>
+        {(store) => <Navbar dispatch={store.dispatch} search={this.props.search} />}
+      </StoreContext.Consumer>
+    );
+  }
+}
+
+export default NavbarWrapper;
